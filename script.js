@@ -10,9 +10,32 @@ fetch('peopie.json')
     })
 
 function appendData(data) {
-        var mainContainer = document.getElementById("myData")
-        for (var i = 0; i < data.length; i++){
-            var div = document.createElement("div")
-            div.innerHTML = ""
-        }
+    
+                                        //------- 1 --------//
+        // var mainContainer = document.getElementById("myData")
+        // for (var i = 0; i < data.length; i++){
+        //     var div = document.createElement("div")
+        //     div.innerHTML = "ID: " + data[i].id + "<br>" + "จังหวัด: " + data[i].name + "<br>" + 'เมืองหลวง: ' + data[i].capital + "<br>" + 'ขนาดพื้นที่: ' + data[i].area + "<br>" + 'ประชากร: ' + data[i].population
+        //     mainContainer.appendChild(div)  
+        // }
+        
+                                        //------- 2 --------//
+        // const container = document.getElementById("myData");
+        // data.province.forEach(province => {
+        // const innerDiv = document.createElement("div");
+        // innerDiv.classList.add("inner");
+        // innerDiv.innerHTML = `
+        //     <p>ID: ${province.id}</p> 
+        //     <p>จังหวัด: ${province.name}</p>
+        //     <p>เมืองหลวง: ${province.capital}</p>
+        //     <p>ขนาดพื้นที่: ${province.area}</p>
+        //     <p>ประชากร: ${province.population}</p>
+        //     <hr>
+        //     `
+ 
+
+
+  container.appendChild(innerDiv);
+});
 }
+
