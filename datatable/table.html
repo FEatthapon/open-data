@@ -62,9 +62,19 @@
       $(document).ready(() => {
         $.ajax({
           method: "get",
-          url: "https://raw.githubusercontent.com/FEatthapon/open-data/main/peopie.json?token=GHSAT0AAAAAACP6PQKDXXLIZFMVRRIR6W4QZP5H6DQ",
+          url: "",
           success: (response) => {
-            console.log(response);
+            console.log(response)
+            for(let i = 0; i < response; i++){
+                const data = response[i];
+                console.log(data.API)
+                html += `
+                <tr>
+                    <th scope="row">${i+1}</th>
+                    <td>${data.id}</td>
+                `
+            }
+
           },
           error: (err) => {
             console.log(err);
