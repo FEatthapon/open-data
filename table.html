@@ -21,13 +21,7 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
-    <!-- Datatable -->
-    <link
-      rel="stylesheet"
-      href="//cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css"
-    />
-    <script src="//cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
-    <title>Open Data</title>
+    <title>Open Data Bootstrap</title>
   </head>
   <body>
     <div class="container p-5">
@@ -58,29 +52,5 @@
         </tbody>
       </table>
     </div>
-    <script>
-      $(document).ready(() => {
-        $.ajax({
-          method: "get",
-          url: "",
-          success: (response) => {
-            console.log(response)
-            for(let i = 0; i < response; i++){
-                const data = response[i];
-                console.log(data.API)
-                html += `
-                <tr>
-                    <th scope="row">${i+1}</th>
-                    <td>${data.id}</td>
-                `
-            }
-
-          },
-          error: (err) => {
-            console.log(err);
-          },
-        });
-      });
-    </script>
   </body>
 </html>
