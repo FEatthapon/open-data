@@ -1,7 +1,19 @@
+/*--- Navigation Bar Function ---*/
+function myMenuFunction() {
+  var menuBtn = document.getElementById("myNavMenu");
+
+  if (menuBtn.className === "nav-menu") {
+    menuBtn.className += " responsive";
+  } else {
+    menuBtn.className = "nav-menu";
+  }
+}
+
+//------ Wiki ------//
 document.addEventListener("DOMContentLoaded", function () {
   let originalData = []; // เก็บข้อมูลต้นฉบับไว้เพื่อใช้ในการกรอง
 
-  fetch("../data.json")
+  fetch("http://localhost:3000/api/province/")
     .then((response) => response.json())
     .then((data) => {
       originalData = data; // เก็บข้อมูลต้นฉบับไว้ในตัวแปร originalData
@@ -17,25 +29,21 @@ document.addEventListener("DOMContentLoaded", function () {
       const row = document.createElement("tr");
 
       const idCell = document.createElement("td");
-      idCell.textContent = item.Id;
+      idCell.textContent = item.id;
       row.appendChild(idCell);
 
+      const codeCell = document.createElement("td");
+      codeCell.textContent = item.code;
+      row.appendChild(codeCell);
+
       const nameCell = document.createElement("td");
-      nameCell.textContent = item.ProvinceName;
+      nameCell.textContent = item.provincename;
       row.appendChild(nameCell);
-
-      const areaCell = document.createElement("td");
-      areaCell.textContent = item.Region;
-      row.appendChild(areaCell);
-
-      const populationCell = document.createElement("td");
-      populationCell.textContent = item.Area;
-      row.appendChild(populationCell);
 
       const linkCell = document.createElement("td");
       const linkButton = document.createElement("a");
       linkButton.textContent = "ดูข้อมูล";
-      linkButton.href = item.url; // เปลี่ยน URL ตามต้องการ
+      linkButton.href = item.url;
       linkButton.classList.add("btn", "btn-outline-primary");
       linkButton.target = "_blank"; // เปิดหน้าเว็บในหน้าต่างใหม่
       linkCell.appendChild(linkButton);
@@ -51,15 +59,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const searchTerm = document
         .getElementById("searchInput")
         .value.toLowerCase();
-
       const filteredData = originalData.filter((item) => {
-        return (
-          item.ProvinceName.toLowerCase().includes(searchTerm) ||
-          item.Region.toLowerCase().includes(searchTerm) ||
-          item.Area.toString().includes(searchTerm)
-        );
+        return item.provincename.toLowerCase().includes(searchTerm);
       });
-
-      displayData(filteredData);
+      if (filteredData.length > 0) {
+        displayData(filteredData);
+      } else {
+        const tbody = document.getElementById("dataDisplay");
+        tbody.innerHTML = "<tr><td colspan='4'>ไม่พบข้อมูลที่ค้นหา</td></tr>";
+      }
+      document.getElementById("searchInput").value = "";
     });
 });
