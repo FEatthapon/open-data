@@ -1,19 +1,8 @@
-/*--- Navigation Bar Function ---*/
-function myMenuFunction() {
-  var menuBtn = document.getElementById("myNavMenu");
-
-  if (menuBtn.className === "nav-menu") {
-    menuBtn.className += " responsive";
-  } else {
-    menuBtn.className = "nav-menu";
-  }
-}
-
 //------ Wiki ------//
 document.addEventListener("DOMContentLoaded", function () {
   let originalData = []; // เก็บข้อมูลต้นฉบับไว้เพื่อใช้ในการกรอง
 
-  fetch("http://localhost:3000/api/province/")
+  fetch("http://localhost:3000/api/province?page=1")
     .then((response) => response.json())
     .then((data) => {
       originalData = data; // เก็บข้อมูลต้นฉบับไว้ในตัวแปร originalData

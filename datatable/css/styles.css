@@ -119,3 +119,39 @@
         row-gap: 30px;
         background: #F8F8F8;
     }
+
+    /* Pagination Styles */
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        margin-right: 5px;
+    }
+
+    .pagination a.active {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    /* container */
+
+    .container {
+        max-width: 960px;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .table th,
+    .table td {
+        text-align: center;
+    }
