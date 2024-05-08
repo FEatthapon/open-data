@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const itemsPerPage = 11; // จำนวนรายการต่อหน้า
+  const itemsPerPage = 50; // จำนวนรายการต่อหน้า
   let currentPage = 1; // หน้าปัจจุบัน
   let totalPages = 0; // จำนวนหน้าทั้งหมด
   let originalData = []; // เก็บข้อมูลต้นฉบับไว้เพื่อใช้ในการกรอง
@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
   fetchDistrictData(currentPage);
 
   function fetchDistrictData(page) {
-    const itemsPerPage = 11; // จำนวนรายการต่อหน้า
     const url = `http://localhost:3000/api/districts?page=${page}&itemsPerPage=${itemsPerPage}`;
 
     fetch(url)
@@ -47,11 +46,11 @@ document.addEventListener("DOMContentLoaded", function () {
       tbody.appendChild(row);
     });
 
-    // Display total data count
+    // Display total data count based on the filtered data
     const totalData = document.getElementById("totalData");
-    totalData.textContent = `พบข้อมูลทั้งหมด: ${originalData.length} รายการ`;
+    totalData.textContent = `พบข้อมูลทั้งหมด: ${data.length} รายการ`;
 
-    // สร้าง pagination หลังแสดงข้อมูล
+    // Clear pagination and recreate it based on the filtered data
     createPagination();
   }
 
@@ -59,10 +58,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const paginationContainer = document.getElementById("pagination");
     paginationContainer.innerHTML = "";
 
+    // First page button
+    const firstPageButton = document.createElement("li");
+    firstPageButton.classList.add("page-item");
+    firstPageButton.innerHTML = `<a class="page-link" href="#">&laquo;</a>`;
+    firstPageButton.addEventListener("click", function () {
+      currentPage = 1;
+      fetchDistrictData(currentPage);
+    });
+    paginationContainer.appendChild(firstPageButton);
+
     // Previous button
-    const previousButton = document.createElement("a");
-    previousButton.classList.add("pagination-item", "previous");
-    previousButton.textContent = "Previous";
+    const previousButton = document.createElement("li");
+    previousButton.classList.add("page-item");
+    previousButton.innerHTML = `<a class="page-link" href="#">&lt;</a>`;
     previousButton.addEventListener("click", function () {
       if (currentPage > 1) {
         currentPage--;
@@ -70,26 +79,95 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
     paginationContainer.appendChild(previousButton);
-    // Page number links
-    for (let i = 1; i <= totalPages; i++) {
-      const pageLink = document.createElement("a");
-      pageLink.classList.add("pagination-item", "page-link");
-      pageLink.textContent = i;
-      pageLink.addEventListener("click", function (event) {
-        event.preventDefault();
-        currentPage = parseInt(event.target.textContent);
+
+    // Page number buttons
+    const maxVisiblePages = 5; // จำนวนปุ่มหน้าที่แสดงสูงสุด
+    let startPage, endPage;
+
+    if (totalPages <= maxVisiblePages) {
+      // แสดงปุ่มสำหรับทุกหน้า
+      startPage = 1;
+      endPage = totalPages;
+    } else {
+      // แสดงปุ่มสำหรับบางหน้าเท่านั้น
+      const offset = Math.floor(maxVisiblePages / 2);
+      if (currentPage <= offset) {
+        // หน้าปัจจุบันอยู่ช่วงต้น
+        startPage = 1;
+        endPage = maxVisiblePages;
+      } else if (currentPage + offset >= totalPages) {
+        // หน้าปัจจุบันอยู่ช่วงท้าย
+        startPage = totalPages - maxVisiblePages + 1;
+        endPage = totalPages;
+      } else {
+        // หน้าปัจจุบันอยู่ช่วงกลาง
+        startPage = currentPage - offset;
+        endPage = currentPage + offset;
+      }
+    }
+
+    // Display first page (no duplicates)
+    const firstPageButton2 = document.createElement("li");
+    firstPageButton2.classList.add("page-item");
+    firstPageButton2.innerHTML = `<a class="page-link" href="#">1</a>`;
+    firstPageButton2.addEventListener("click", function () {
+      currentPage = 1;
+      fetchDistrictData(currentPage);
+    });
+    if (currentPage === 1) {
+      firstPageButton2.classList.add("active");
+    }
+    paginationContainer.appendChild(firstPageButton2);
+
+    // Display ellipsis if there are more than 5 pages
+    if (totalPages > maxVisiblePages && startPage > 2) {
+      const ellipsisButton = document.createElement("li");
+      ellipsisButton.classList.add("page-item", "disabled");
+      ellipsisButton.innerHTML = `<a class="page-link" href="#">...</a>`;
+      paginationContainer.appendChild(ellipsisButton);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      const pageButton = document.createElement("li");
+      pageButton.classList.add("page-item");
+      pageButton.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+      pageButton.addEventListener("click", function () {
+        currentPage = parseInt(this.textContent);
         fetchDistrictData(currentPage);
       });
       if (currentPage === i) {
-        pageLink.classList.add("active");
+        pageButton.classList.add("active");
       }
-      paginationContainer.appendChild(pageLink);
+      paginationContainer.appendChild(pageButton);
+    }
+
+    // Display ellipsis if there are more than 5 pages
+    if (totalPages > maxVisiblePages && endPage < totalPages) {
+      const ellipsisButton = document.createElement("li");
+      ellipsisButton.classList.add("page-item", "disabled");
+      ellipsisButton.innerHTML = `<a class="page-link" href="#">...</a>`;
+      paginationContainer.appendChild(ellipsisButton);
+    }
+
+    // Display last page (no duplicates)
+    if (totalPages > 1) {
+      const lastPageButton = document.createElement("li");
+      lastPageButton.classList.add("page-item");
+      lastPageButton.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
+      lastPageButton.addEventListener("click", function () {
+        currentPage = totalPages;
+        fetchDistrictData(currentPage);
+      });
+      if (currentPage === totalPages) {
+        lastPageButton.classList.add("active");
+      }
+      paginationContainer.appendChild(lastPageButton);
     }
 
     // Next button
-    const nextButton = document.createElement("a");
-    nextButton.classList.add("pagination-item", "next");
-    nextButton.textContent = "Next";
+    const nextButton = document.createElement("li");
+    nextButton.classList.add("page-item");
+    nextButton.innerHTML = `<a class="page-link" href="#">&gt;</a>`;
     nextButton.addEventListener("click", function () {
       if (currentPage < totalPages) {
         currentPage++;
@@ -97,6 +175,16 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
     paginationContainer.appendChild(nextButton);
+
+    // Last page button
+    const lastPageButton2 = document.createElement("li");
+    lastPageButton2.classList.add("page-item");
+    lastPageButton2.innerHTML = `<a class="page-link" href="#">&raquo;</a>`;
+    lastPageButton2.addEventListener("click", function () {
+      currentPage = totalPages;
+      fetchDistrictData(currentPage);
+    });
+    paginationContainer.appendChild(lastPageButton2);
   }
 
   document
