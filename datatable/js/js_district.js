@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // เรียกใช้ฟังก์ชันเพื่อโหลดข้อมูลในหน้าแรก
   fetchDistrictData(currentPage);
 
+  //ฟังก์ชันนี้ใช้ดึงข้อมูลรายการเขตจาก API โดยใช้หมายเลขหน้าที่ส่งมา (page)
   function fetchDistrictData(page) {
     const url = `http://localhost:3000/api/districts?page=${page}&itemsPerPage=${itemsPerPage}`;
 
@@ -20,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Error fetching district data:", error);
-        // Handle error gracefully, such as displaying an error message to the user
+        // จัดการกับข้อผิดพลาดอย่างสวยงาม เช่น การแสดงข้อความแสดงข้อผิดพลาดแก่ผู้ใช้
       });
   }
 
@@ -46,11 +47,11 @@ document.addEventListener("DOMContentLoaded", function () {
       tbody.appendChild(row);
     });
 
-    // Display total data count based on the filtered data
+    // แสดงจำนวนข้อมูลทั้งหมดตามข้อมูลที่กรอง
     const totalData = document.getElementById("totalData");
     totalData.textContent = `พบข้อมูลทั้งหมด: ${data.length} รายการ`;
 
-    // Clear pagination and recreate it based on the filtered data
+    // ล้างการแบ่งหน้าและสร้างใหม่ตามข้อมูลที่กรอง
     createPagination();
   }
 
@@ -194,6 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .getElementById("searchInput")
         .value.toLowerCase();
       const filteredData = originalData.filter((item) => {
+        //เก็บข้อมูลรายการเขตที่กรองแล้ว
         return item.districtsname.toLowerCase().includes(searchTerm);
       });
       if (filteredData.length > 0) {
