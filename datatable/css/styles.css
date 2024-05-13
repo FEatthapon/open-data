@@ -155,3 +155,18 @@
     .table td {
         text-align: center;
     }
+
+    #paginationInfo {
+
+        margin-top: 10px;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    @media (max-width: 576px) {
+
+        /* ปรับขนาดของข้อความเมื่อหน้าจอเล็กกว่า 576px */
+        #paginationInfo {
+            font-size: 12px;
+        }
+    }

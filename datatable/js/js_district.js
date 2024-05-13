@@ -9,8 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //ฟังก์ชันนี้ใช้ดึงข้อมูลรายการเขตจาก API โดยใช้หมายเลขหน้าที่ส่งมา (page)
   function fetchDistrictData(page) {
-    const url = `http://localhost:3000/api/districts?page=${page}&itemsPerPage=${itemsPerPage}`;
-
+    const url = `https://node-mongodb-api-x91v.onrender.com/api/districts/page/${page}`;
+    //https://node-mongodb-api-x91v.onrender.com/api/districts/page/1
+    //http://localhost:3000/api/districts?page=${page}&itemsPerPage=${itemsPerPage}
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         totalPages = data.pages; // กำหนดจำนวนหน้าทั้งหมด
         displayData(originalData);
         createPagination(); // สร้าง pagination
+        updatePageInfo(); // แสดงหมายเลขหน้าปัจจุบันและจำนวนหน้าทั้งหมด
       })
       .catch((error) => {
         console.error("Error fetching district data:", error);
@@ -82,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
     paginationContainer.appendChild(previousButton);
 
     // Page number buttons
-    const maxVisiblePages = 5; // จำนวนปุ่มหน้าที่แสดงสูงสุด
+    const maxVisiblePages = 6; // จำนวนปุ่มหน้าที่แสดงสูงสุด
     let startPage, endPage;
 
     if (totalPages <= maxVisiblePages) {
@@ -107,27 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Display first page (no duplicates)
-    const firstPageButton2 = document.createElement("li");
-    firstPageButton2.classList.add("page-item");
-    firstPageButton2.innerHTML = `<a class="page-link" href="#">1</a>`;
-    firstPageButton2.addEventListener("click", function () {
-      currentPage = 1;
-      fetchDistrictData(currentPage);
-    });
-    if (currentPage === 1) {
-      firstPageButton2.classList.add("active");
-    }
-    paginationContainer.appendChild(firstPageButton2);
-
-    // Display ellipsis if there are more than 5 pages
-    if (totalPages > maxVisiblePages && startPage > 2) {
-      const ellipsisButton = document.createElement("li");
-      ellipsisButton.classList.add("page-item", "disabled");
-      ellipsisButton.innerHTML = `<a class="page-link" href="#">...</a>`;
-      paginationContainer.appendChild(ellipsisButton);
-    }
-
+    // Display page numbers
     for (let i = startPage; i <= endPage; i++) {
       const pageButton = document.createElement("li");
       pageButton.classList.add("page-item");
@@ -138,32 +120,39 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       if (currentPage === i) {
         pageButton.classList.add("active");
+      } else {
+        pageButton.classList.remove("active");
       }
       paginationContainer.appendChild(pageButton);
     }
 
-    // Display ellipsis if there are more than 5 pages
-    if (totalPages > maxVisiblePages && endPage < totalPages) {
-      const ellipsisButton = document.createElement("li");
-      ellipsisButton.classList.add("page-item", "disabled");
-      ellipsisButton.innerHTML = `<a class="page-link" href="#">...</a>`;
-      paginationContainer.appendChild(ellipsisButton);
+    // Display first page (no duplicates)
+    if (startPage > 1) {
+      if (currentPage === 1) {
+        firstPageButton.classList.add("active");
+      } else {
+        firstPageButton.classList.remove("active");
+      }
+    } else {
+      firstPageButton.classList.add("active");
     }
 
-    // Display last page (no duplicates)
-    if (totalPages > 1) {
-      const lastPageButton = document.createElement("li");
-      lastPageButton.classList.add("page-item");
-      lastPageButton.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
-      lastPageButton.addEventListener("click", function () {
-        currentPage = totalPages;
-        fetchDistrictData(currentPage);
-      });
-      if (currentPage === totalPages) {
-        lastPageButton.classList.add("active");
-      }
-      paginationContainer.appendChild(lastPageButton);
-    }
+    // // Display last page (no duplicates) แสดงเลขท้ายสุดของข้อมูลนั้น
+    // if (totalPages > 1 && endPage < totalPages) {
+    //   const lastPageButton = document.createElement("li");
+    //   lastPageButton.classList.add("page-item");
+    //   lastPageButton.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
+    //   lastPageButton.addEventListener("click", function () {
+    //     currentPage = totalPages;
+    //     fetchDistrictData(currentPage);
+    //   });
+    //   if (currentPage === totalPages) {
+    //     lastPageButton.classList.add("active");
+    //   } else {
+    //     lastPageButton.classList.remove("active");
+    //   }
+    //   paginationContainer.appendChild(lastPageButton);
+    // }
 
     // Next button
     const nextButton = document.createElement("li");
@@ -188,14 +177,22 @@ document.addEventListener("DOMContentLoaded", function () {
     paginationContainer.appendChild(lastPageButton2);
   }
 
+  // Function to update page info แสดงหมายเลขหน้าปัจจุบันและจำนวนหน้าทั้งหมด
+  function updatePageInfo() {
+    const pageInfo = document.getElementById("pageInfo");
+    pageInfo.textContent = `หน้า ${currentPage} จาก ${totalPages}`;
+  }
+
+  console.log(updatePageInfo);
+  //Function ค้นหา
   document
     .getElementById("searchButton")
     .addEventListener("click", function () {
       const searchTerm = document
         .getElementById("searchInput")
         .value.toLowerCase();
+      //เก็บข้อมูลรายการเขตที่กรองแล้ว
       const filteredData = originalData.filter((item) => {
-        //เก็บข้อมูลรายการเขตที่กรองแล้ว
         return item.districtsname.toLowerCase().includes(searchTerm);
       });
       if (filteredData.length > 0) {
