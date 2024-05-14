@@ -9,13 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //ฟังก์ชันนี้ใช้ดึงข้อมูลรายการเขตจาก API โดยใช้หมายเลขหน้าที่ส่งมา (page)
   function fetchDistrictData(page) {
-    const url = `http://localhost:8000/api/districts/page/${page}`;
-    //https://node-mongodb-api-x91v.onrender.com/api/districts/page/1
-    //http://localhost:3000/api/districts?page=${page}&itemsPerPage=${itemsPerPage}
+    const url = `http://localhost:8000/api/subdistricts/page/${page}`;
+    //https://node-mongodb-api-x91v.onrender.com/api/subdistricts/page/1
+    //https://node-mongodb-api-x91v.onrender.com/api/districts/page/${page}
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        originalData = data.districts; // เก็บข้อมูลต้นฉบับไว้ในตัวแปร originalData
+        originalData = data.subdistricts; // เก็บข้อมูลต้นฉบับไว้ในตัวแปร originalData
         totalPages = data.pages; // กำหนดจำนวนหน้าทั้งหมด
         displayData(originalData);
         createPagination(); // สร้าง pagination
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
       row.appendChild(codeCell);
 
       const nameCell = document.createElement("td");
-      nameCell.textContent = item.districtsname;
+      nameCell.textContent = item.subdistrict;
       row.appendChild(nameCell);
 
       tbody.appendChild(row);
@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .value.toLowerCase();
       //เก็บข้อมูลรายการเขตที่กรองแล้ว
       const filteredData = originalData.filter((item) => {
-        return item.districtsname.toLowerCase().includes(searchTerm);
+        return item.subdistrict.toLowerCase().includes(searchTerm);
       });
       if (filteredData.length > 0) {
         displayData(filteredData);

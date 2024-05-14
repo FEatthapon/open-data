@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   let originalData = []; // เก็บข้อมูลต้นฉบับไว้เพื่อใช้ในการกรอง
 
-  fetch("https://node-mongodb-api-x91v.onrender.com/api/province")
+  fetch("http://localhost:8000/api/province")
     .then((response) => response.json())
     .then((data) => {
       originalData = data; // เก็บข้อมูลต้นฉบับไว้ในตัวแปร originalData
